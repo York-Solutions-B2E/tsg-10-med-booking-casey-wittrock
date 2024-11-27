@@ -1,0 +1,51 @@
+# Global ignores (all environments)
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# Node.js
+node_modules/
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Client (React with Vite)
+client/node_modules/
+client/dist/
+client/.env
+client/.env.*
+
+# API (Java Spring Boot)
+api/target/
+api/.gradle/
+api/.mvn/
+api/logs/
+
+# Placeholder files for sensitive configurations
+# Track only if these don't contain sensitive data.
+# Provide example templates if needed.
+api/application.yml.example
+api/application.properties.example
+
+# Docker
+**/docker-compose.override.yml
+.dockerignore
+*.swp
+*.swo
+**/tmp/
+volumes/
+db_data/
+
+# Ensure Docker configuration is tracked
+!docker-compose.yml
