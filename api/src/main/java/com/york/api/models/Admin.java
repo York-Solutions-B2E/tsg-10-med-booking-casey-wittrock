@@ -1,12 +1,9 @@
 package com.york.api.models;
 
-import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -18,14 +15,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Specialization {
+public class Admin {
 
     @Id
-    @SequenceGenerator(name = "specialization_sequence", sequenceName = "specialization_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "specialization_sequence")
+    @SequenceGenerator(name = "admin_sequence", sequenceName = "admin_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "admin_sequence")
     private Long id;
-    private String name;
+    private String firstName;
+    private String lastName;
+    private String email;
 
-    @OneToMany(mappedBy = "specialization")
-    private List<Doctor> doctors;
 }
