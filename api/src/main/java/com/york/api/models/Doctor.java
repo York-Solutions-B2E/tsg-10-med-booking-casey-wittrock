@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
@@ -37,6 +38,10 @@ public class Doctor {
     @ManyToOne
     @JoinColumn(name = "specialization_id")
     private Specialization specialization;
+
+    @ManyToMany(mappedBy = "doctors")
+    @JsonIgnore
+    private List<Patient> patients;
 
     // @OneToMany(mappedBy = "doctor")
     // @JsonIgnore

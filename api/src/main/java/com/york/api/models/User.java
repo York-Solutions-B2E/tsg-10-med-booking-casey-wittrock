@@ -2,6 +2,8 @@ package com.york.api.models;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,41 +29,52 @@ public class User {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
     private Long id;
     private String username;
+    private String role;
     @ColumnDefault("false")
-    private boolean isDoctor;
     private boolean isAdmin;
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "doctor_id")
     @ColumnDefault("null")
+    @JsonIgnore
     private Doctor doctorProfile;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "patient_id")
     @ColumnDefault("null")
+    @JsonIgnore
     private Patient patientProfile;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "admin_id")
     @ColumnDefault("null")
+    @JsonIgnore
     private Admin adminProfile;
 
-    public User(String username, boolean isDoctor, boolean isAdmin, String password) {
+    public User(String username, String roll, boolean isAdmin, String password) {
         this.username = username;
-        this.isDoctor = isDoctor;
+        this.role = roll;
         this.isAdmin = isAdmin;
         this.password = password;
     }
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public Object getProfile() {
-        if (isDoctor) {
+        if (role.equals("doctor")) {
             return doctorProfile;
-        } else if (isAdmin) {
+        } else if (role.equals("admin")) {
             return adminProfile;
-        } else {
+        } else if (role.equals("patient")) {
             return patientProfile;
+        } else {
+            return null;
         }
+
     }
 
 }

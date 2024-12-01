@@ -1,8 +1,14 @@
 package com.york.api.repositories;
 
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import com.york.api.models.Patient;
 
-public interface PatientRepository {
+@Repository
+public interface PatientRepository extends JpaRepository<Patient, Long> {
 
-    Patient findByFirstNameAndDob(String firstName, String dob);
+    List<Patient> findAllByFirstNameAndDob(String firstName, String dob);
 }

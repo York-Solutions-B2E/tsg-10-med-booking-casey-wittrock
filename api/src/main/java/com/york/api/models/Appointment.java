@@ -1,6 +1,6 @@
 package com.york.api.models;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import org.hibernate.annotations.ColumnDefault;
 
@@ -28,7 +28,8 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appointment_sequence")
     private Long id;
 
-    private Date date;
+    private LocalDate date;
+    private String time;
     private boolean isConfirmed;
     private boolean isCancelled;
     private boolean isCompleted;
