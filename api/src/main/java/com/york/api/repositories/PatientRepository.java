@@ -1,5 +1,6 @@
 package com.york.api.repositories;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,5 +11,5 @@ import com.york.api.models.Patient;
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long> {
 
-    List<Patient> findAllByFirstNameAndDob(String firstName, String dob);
+    List<Patient> findAllByLastNameAndDob(String LastName, LocalDate dob);
 }

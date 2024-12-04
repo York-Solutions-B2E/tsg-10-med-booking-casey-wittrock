@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.york.api.models.Specialization;
+import com.york.api.dto.responses.SpecializationDTO;
 import com.york.api.services.SpecializationService;
 
 @RestController
@@ -22,7 +22,7 @@ public class SpecializationController {
     }
 
     @GetMapping("/all")
-    public List<Specialization> getAllSpecializations() {
+    public List<SpecializationDTO> getAllSpecializations() {
         return specializationService.getAllSpecializations();
     }
 

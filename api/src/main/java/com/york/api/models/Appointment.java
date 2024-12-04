@@ -1,15 +1,16 @@
 package com.york.api.models;
 
-import java.time.LocalDate;
-
-import org.hibernate.annotations.ColumnDefault;
+import com.york.api.enums.AppointmentStatus;
+import com.york.api.enums.AppointmentType;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -28,22 +29,18 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appointment_sequence")
     private Long id;
 
-    private LocalDate date;
-    private String time;
-    private boolean isConfirmed;
-    private boolean isCancelled;
-    private boolean isCompleted;
     private String reason;
-    private String notes;
-    @ColumnDefault("true")
-    private boolean notesRead;
+
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus status = AppointmentStatus.PENDING;
+
+    @Enumerated(EnumType.STRING)
+    private AppointmentType type;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    @ManyToOne
-    @JoinColumn(name = "doctor_id")
-    private Doctor doctor;
+    @OneToOne(orphanRemoval = false)
+    private Slot apptInfo;
 
 }

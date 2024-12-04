@@ -4,62 +4,65 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.york.api.models.Appointment;
+import com.york.api.dto.responses.DoctorDTO;
+import com.york.api.dto.responses.SlotDTO;
+import com.york.api.enums.SlotStatus;
+import com.york.api.mappers.DoctorMapper;
+import com.york.api.mappers.SlotMapper;
 import com.york.api.models.Doctor;
-import com.york.api.models.Patient;
+import com.york.api.models.Slot;
 import com.york.api.models.Specialization;
-import com.york.api.repositories.AppointmentRepository;
 import com.york.api.repositories.DoctorRepository;
-import com.york.api.repositories.PatientRepository;
 import com.york.api.repositories.SpecializationRepository;
 
 @Service
 public class DoctorService {
 
     private final DoctorRepository doctorRepository;
-    private final PatientRepository patientRepository;
-    private final AppointmentRepository appointmentRepository;
     private final SpecializationRepository specializationRepository;
+    private final DoctorMapper doctorMapper;
+    private final SlotMapper slotMapper;
 
     @Autowired
-    public DoctorService(DoctorRepository doctorRepository, PatientRepository patientRepository, AppointmentRepository appointmentRepository, SpecializationRepository specializationRepository) {
+    public DoctorService(DoctorRepository doctorRepository, SpecializationRepository specializationRepository,
+            DoctorMapper doctorMapper, SlotMapper slotMapper) {
         this.doctorRepository = doctorRepository;
-        this.patientRepository = patientRepository;
-        this.appointmentRepository = appointmentRepository;
         this.specializationRepository = specializationRepository;
+        this.doctorMapper = doctorMapper;
+        this.slotMapper = slotMapper;
     }
 
-    public Doctor getDoctorById(Long id) {
-        return doctorRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Doctor with id " + id + " not found"));
+    public DoctorDTO getDoctorById(Long id) {
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Doctor with id " + id + " not found"));
+        return doctorMapper.toDTO(doctor);
     }
 
-    public List<Patient> getDoctorPatients(Long id) {
+    @Transactional
+    public List<DoctorDTO> getAllDoctors() {
+        return doctorMapper.toDTOList(doctorRepository.findAll());
+    }
+
+    public List<SlotDTO> getBookedSlots(Long id) {
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Doctor with id " + id + " not found"));
+        List<Slot> slots = doctor.getSlots();
+        List<Slot> bookedSlots = slots.stream().filter(slot -> slot.getStatus() == SlotStatus.BOOKED).toList();
+        return slotMapper.toDTOList(bookedSlots);
+    }
+
+    public List<SlotDTO> getDoctorAvailability(Long id) {
         Doctor doctor = doctorRepository.findById(id).orElseThrow(()
                 -> new IllegalArgumentException("Doctor with id " + id + " not found"));
-        return doctor.getPatients();
+        return slotMapper.toDTOList(doctor.getSlots().stream().filter(slot
+                -> slot.getStatus() == SlotStatus.AVAILABLE).toList());
     }
 
-    public List<Appointment> getDoctorAppointments(Long id) {
-        Doctor doctor = doctorRepository.findById(id).orElseThrow(()
-                -> new IllegalArgumentException("Doctor with id " + id + " not found"));
-        return doctor.getAppointments();
-    }
-
-    public Doctor updateDoctorProfile(Long id, Doctor doctor) {
-        Doctor existingDoctor = doctorRepository.findById(id).orElseThrow(()
-                -> new IllegalArgumentException("Doctor with id " + id + " not found"));
-        existingDoctor.setFirstName(doctor.getFirstName());
-        existingDoctor.setLastName(doctor.getLastName());
-        existingDoctor.setAddress(doctor.getAddress());
-        existingDoctor.setPhone(doctor.getPhone());
-        return doctorRepository.save(existingDoctor);
-    }
-
-    public List<Doctor> getDoctorsBySpecialization(Long specializationId) {
+    @Transactional
+    public List<DoctorDTO> getDoctorsBySpecialization(Long specializationId) {
         Specialization specialization = specializationRepository.findById(specializationId).orElseThrow(()
                 -> new IllegalArgumentException("Specialization with id " + specializationId + " not found"));
-        return specialization.getDoctors();
+        return doctorMapper.toDTOList(specialization.getDoctors());
     }
 
 }

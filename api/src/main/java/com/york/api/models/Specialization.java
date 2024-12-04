@@ -26,6 +26,7 @@ public class Specialization {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "specialization")
+    @OneToMany(mappedBy = "specialization", orphanRemoval = false)
     private List<Doctor> doctors;
+
 }

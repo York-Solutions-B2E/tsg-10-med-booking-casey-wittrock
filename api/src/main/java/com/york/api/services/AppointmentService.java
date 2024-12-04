@@ -1,78 +1,90 @@
 package com.york.api.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.york.api.dto.responses.AppointmentDTO;
+import com.york.api.enums.AppointmentStatus;
+import com.york.api.enums.SlotStatus;
+import com.york.api.mappers.AppointmentMapper;
 import com.york.api.models.Appointment;
+import com.york.api.models.Slot;
 import com.york.api.repositories.AppointmentRepository;
 import com.york.api.repositories.DoctorRepository;
 import com.york.api.repositories.PatientRepository;
+import com.york.api.repositories.SlotRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
+    private final SlotRepository slotRepository;
+    private final DoctorRepository doctorRepository;
+    private final AppointmentMapper appointmentMapper;
 
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, DoctorRepository doctorRepository, PatientRepository patientRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, PatientRepository patientRepository,
+            SlotRepository slotRepository, DoctorRepository doctorRepository, AppointmentMapper appointmentMapper) {
         this.appointmentRepository = appointmentRepository;
-        this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
+        this.slotRepository = slotRepository;
+        this.doctorRepository = doctorRepository;
+        this.appointmentMapper = appointmentMapper;
     }
 
-    public Appointment getAppointmentById(Long id) {
-        return appointmentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Appointment with id " + id + " not found"));
+//     public AppointmentDTO getAppointmentById(Long id) {
+//         Appointment appt = appointmentRepository.findById(id).orElseThrow(()
+//                 -> new IllegalArgumentException("Appointment with id " + id + " not found"));
+//         return appointmentMapper.toDTO(appt);
+//     }
+    @Transactional
+    public AppointmentDTO cancelAppointment(Long id) {
+        Appointment existingAppointment = appointmentRepository.findById(id).orElseThrow(()
+                -> new IllegalArgumentException("Appointment with id " + id + " not found"));
+        existingAppointment.setStatus(AppointmentStatus.CANCELED);
+        Slot slot = existingAppointment.getApptInfo();
+        slot.setStatus(SlotStatus.AVAILABLE);
+        slotRepository.save(slot);
+        existingAppointment.setApptInfo(null);
+        return appointmentMapper.toDTO(appointmentRepository.save(existingAppointment));
     }
 
-    public Appointment createAppointment(Appointment appointment) {
-        return appointmentRepository.save(appointment);
+    public AppointmentDTO confirmAppointment(Long id) {
+        Appointment existingAppointment = appointmentRepository.findById(id).orElseThrow(()
+                -> new IllegalArgumentException("Appointment with id " + id + " not found"));
+        existingAppointment.setStatus(AppointmentStatus.CONFIRMED);
+        return appointmentMapper.toDTO(appointmentRepository.save(existingAppointment));
     }
 
-    public Appointment cancelAppointment(Long id) {
-        Appointment existingAppointment = getAppointmentById(id);
-        existingAppointment.setCancelled(true);
-        return appointmentRepository.save(existingAppointment);
+    @Transactional
+    public AppointmentDTO rescheduleAppointment(Long apptId, Long slotId) {
+        Appointment existingAppointment = appointmentRepository.findById(apptId).orElseThrow(()
+                -> new IllegalArgumentException("Appointment with id " + apptId + " not found"));
+        Slot newSlot = slotRepository.findById(slotId).orElseThrow(()
+                -> new IllegalArgumentException("Slot with id " + slotId + " not found"));
+        Slot oldSlot = existingAppointment.getApptInfo();
+        oldSlot.setStatus(SlotStatus.AVAILABLE);
+        existingAppointment.setApptInfo(newSlot);
+        newSlot.setStatus(SlotStatus.BOOKED);
+        slotRepository.saveAll(List.of(oldSlot, newSlot));
+        return appointmentMapper.toDTO(appointmentRepository.save(existingAppointment));
     }
 
-    public Appointment rescheduleAppointment(Long id, Appointment appointment) {
-        Appointment existingAppointment = getAppointmentById(id);
-        existingAppointment.setDate(appointment.getDate());
-        existingAppointment.setTime(appointment.getTime());
-        return appointmentRepository.save(existingAppointment);
-    }
-
-    public Appointment updateAppointment(Long id, Appointment appointment) {
-        Appointment existingAppointment = getAppointmentById(id);
-        existingAppointment.setDate(appointment.getDate());
-        existingAppointment.setTime(appointment.getTime());
-        existingAppointment.setConfirmed(appointment.isConfirmed());
-        existingAppointment.setCancelled(appointment.isCancelled());
-        existingAppointment.setCompleted(appointment.isCompleted());
-        existingAppointment.setNotesRead(appointment.isNotesRead());
-        existingAppointment.setNotes(appointment.getNotes());
-        return appointmentRepository.save(existingAppointment);
-    }
-
-    public Appointment createAndSetAppointment(Long patientId, Long doctorId, Appointment appointment) {
-        appointment.setDoctor(doctorRepository.findById(doctorId).orElseThrow(()
-                -> new IllegalArgumentException("Doctor with id " + doctorId + " not found")));
+    @Transactional
+    public AppointmentDTO createAndSetAppointment(Long patientId, Long slotId, Appointment appointment) {
+        Slot slot = slotRepository.findById(slotId).orElseThrow(()
+                -> new IllegalArgumentException("Slot with id " + slotId + " not found"));
+        appointment.setApptInfo(slot);
+        slot.setStatus(SlotStatus.BOOKED);
+        slotRepository.save(slot);
         appointment.setPatient(patientRepository.findById(patientId).orElseThrow(()
                 -> new IllegalArgumentException("Patient with id " + patientId + " not found")));
-        return appointmentRepository.save(appointment);
+        return appointmentMapper.toDTO(appointmentRepository.save(appointment));
     }
 
-    public Appointment setNotes(Long id, String notes) {
-        Appointment existingAppointment = getAppointmentById(id);
-        existingAppointment.setNotes(notes);
-        existingAppointment.setNotesRead(false);
-        return appointmentRepository.save(existingAppointment);
-    }
-
-    public Appointment markNotesRead(Long id) {
-        Appointment existingAppointment = getAppointmentById(id);
-        existingAppointment.setNotesRead(true);
-        return appointmentRepository.save(existingAppointment);
-    }
 }

@@ -2,14 +2,12 @@ package com.york.api.models;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
@@ -34,20 +32,15 @@ public class Doctor {
     private String email;
     private String phone;
     private String address;
+    // private String bio;
+    // private String profilePic;
+    // private String education;
 
     @ManyToOne
     @JoinColumn(name = "specialization_id")
     private Specialization specialization;
 
-    @ManyToMany(mappedBy = "doctors")
-    @JsonIgnore
-    private List<Patient> patients;
-
-    // @OneToMany(mappedBy = "doctor")
-    // @JsonIgnore
-    // private List<Message> messages;
-    @OneToMany(mappedBy = "doctor")
-    @JsonIgnore
-    private List<Appointment> appointments;
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Slot> slots;
 
 }

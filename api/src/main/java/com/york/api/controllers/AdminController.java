@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.york.api.models.Doctor;
-import com.york.api.models.Specialization;
+import com.york.api.dto.requests.DoctorRequest;
+import com.york.api.dto.responses.AppointmentDTO;
+import com.york.api.dto.responses.DoctorDTO;
+import com.york.api.dto.responses.SpecializationDTO;
+import com.york.api.enums.AppointmentStatus;
 import com.york.api.services.AdminService;
 
 @RestController
@@ -25,49 +28,54 @@ public class AdminController {
         this.adminService = adminService;
     }
 
+    // Admin User Management
     @DeleteMapping("/user/{id}")
     public void deleteUser(@PathVariable Long id) {
         adminService.deleteUser(id);
     }
 
+    // Admin Patient Management
     @DeleteMapping("/patient/{id}")
     public void deletePatient(@PathVariable Long id) {
         adminService.deletePatient(id);
     }
 
+    // Admin Doctor Management
     @DeleteMapping("/doctor/{id}")
     public void deleteDoctor(@PathVariable Long id) {
         adminService.deleteDoctor(id);
     }
 
-    @PostMapping("/doctor/{specializationId}/create")
-    public Doctor createDoctorAndSetSpecialization(@RequestBody Doctor doctor, @PathVariable Long specializationId) {
-        return adminService.createDoctorAndSetSpecialization(doctor, specializationId);
+    @PutMapping("/doctor/{doctorId}/update")
+    public DoctorDTO updateDoctor(@PathVariable Long doctorId, @RequestBody DoctorRequest updateInfo) {
+        return adminService.updateDoctor(updateInfo, doctorId);
     }
 
+    @PostMapping("/doctor/create")
+    public DoctorDTO createDoctorAndSetSpecialization(@RequestBody DoctorRequest doctorInfo) {
+        return adminService.createDoctor(doctorInfo);
+    }
+
+    // Admin Specialization Management
     @DeleteMapping("/specialization/{id}")
     public void deleteSpecialization(@PathVariable Long id) {
         adminService.deleteSpecialization(id);
     }
 
-    @PostMapping("/specialization/create")
-    public void createSpecialization(@RequestBody Specialization specialization) {
-        adminService.createSpecialization(specialization);
+    @PostMapping("/specialization/create/{specialization}")
+    public SpecializationDTO createSpecialization(@PathVariable String specialization) {
+        return adminService.createSpecialization(specialization);
     }
 
+    // Admin Appointment Management
     @DeleteMapping("/appointment/{id}")
     public void deleteAppointment(@PathVariable Long id) {
         adminService.deleteAppointment(id);
     }
 
-    @PutMapping("/doctor/{doctorId}/update")
-    public Doctor updateDoctor(@PathVariable Long doctorId, @RequestBody Doctor updateInfo) {
-        return adminService.updateDoctor(doctorId, updateInfo);
-    }
-
-    @PatchMapping("/doctor/{doctorId}/specialization/{specializationId}")
-    public Doctor changeDoctorSpecialization(@PathVariable Long doctorId, @PathVariable Long specializationId) {
-        return adminService.changeDoctorSpecialization(doctorId, specializationId);
+    @PatchMapping("/appointment/{appointmentId}/{status}")
+    public AppointmentDTO updateAppointmentStatus(@PathVariable Long appointmentId, @PathVariable AppointmentStatus status) {
+        return adminService.updateAppointmentStatus(appointmentId, status);
     }
 
 }
