@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.york.api.dto.responses.SpecializationDTO;
 import com.york.api.mappers.SpecializationMapper;
-import com.york.api.models.Specialization;
 import com.york.api.repositories.SpecializationRepository;
 
 @Service
@@ -28,8 +27,8 @@ public class SpecializationService {
         return specializationMapper.toDTOList(specializationRepository.findAll());
     }
 
-    public Specialization getSpecializationById(Long id) {
-        return specializationRepository.findById(id).orElseThrow(()
-                -> new IllegalArgumentException("Specialization with id " + id + " not found"));
-    }
+    // public Specialization getSpecializationById(Long id) {
+    //     return specializationRepository.findById(id).orElseThrow(()
+    //             -> new IllegalArgumentException("Specialization with id " + id + " not found"));
+    // }
 }

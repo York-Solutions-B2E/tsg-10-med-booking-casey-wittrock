@@ -1,6 +1,6 @@
 package com.york.api.dto.responses;
 
-import com.york.api.enums.UserRole;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class UserAndProfileDataDTO {
 
-    private Long id;
-    private String username;
-    private String oktaId;
-    private UserRole role;
-
+    UserDTO user;
+    Object profile;
+    List<AppointmentDTO> appointments;
 }

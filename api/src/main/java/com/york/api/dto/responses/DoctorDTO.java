@@ -22,5 +22,6 @@ public class DoctorDTO {
     //private String profilePic;
     //private String education;
     private String specialization;
+    private Long specializationId;
 
 }

@@ -1,10 +1,13 @@
 package com.york.api.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import com.york.api.dto.requests.AuthenticationRequest;
-import com.york.api.dto.responses.UserDTO;
+import com.york.api.dto.responses.UserAndProfileDataDTO;
+import com.york.api.enums.UserRole;
+import com.york.api.mappers.AppointmentMapper;
+import com.york.api.mappers.PatientMapper;
 import com.york.api.mappers.UserMapper;
 import com.york.api.models.User;
 import com.york.api.repositories.UserRepository;
@@ -14,45 +17,41 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final AppointmentMapper appointmentMapper;
+    private final PatientMapper patientMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, AppointmentMapper appointmentMapper,
+            PatientMapper patientMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.appointmentMapper = appointmentMapper;
+        this.patientMapper = patientMapper;
     }
 
-    public UserDTO login(AuthenticationRequest loginInfo) {
-        User user = userRepository.findByUsernameAndPassword(loginInfo.getUsername(), loginInfo.getPassword()).orElseThrow(()
-                -> new RuntimeException("No user found with the provided credentials"));
-        return userMapper.toDTO(user);
+    public UserAndProfileDataDTO getOrCreateUser(OAuth2User user) {
+        String oktaId = user.getAttribute("sub");
+        User existingUser = userRepository.findByOktaId(oktaId).orElseGet(()
+                -> userRepository.save(new User(user.getAttribute("preferred_username"), user.getAttribute("sub"))));
+        UserAndProfileDataDTO data = new UserAndProfileDataDTO();
+        data.setUser(userMapper.toDTO(existingUser));
+        if (existingUser.getRole().equals(UserRole.PATIENT)) {
+            if (existingUser.getPatientProfile() != null) {
+                data.setProfile(patientMapper.toDTO(existingUser.getPatientProfile()));
+                data.setAppointments(appointmentMapper.toDTOList(existingUser.getPatientProfile().getAppointments()));
+            } else {
+                data.setProfile(null);
+                data.setAppointments(null);
+            }
+
+        } else if (existingUser.getRole().equals(UserRole.ADMIN)) {
+            data.setProfile(existingUser.getAdminProfile());
+            data.setAppointments(null);
+        } else {
+            data.setProfile(null);
+            data.setAppointments(null);
+        }
+        return data;
     }
 
-    public UserDTO register(AuthenticationRequest registerInfo) {
-        User user = new User();
-        user.setUsername(registerInfo.getUsername());
-        user.setPassword(registerInfo.getPassword());
-        return userMapper.toDTO(userRepository.save(user));
-    }
-
-    public UserDTO getUserByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(()
-                -> new RuntimeException("User with username " + username + " not found"));
-        return userMapper.toDTO(user);
-    }
-
-    public UserDTO getUserByOktaId(String oktaId) {
-        User user = userRepository.findByOktaId(oktaId).orElseThrow(()
-                -> new RuntimeException("User with Okta ID " + oktaId + " not found"));
-        return userMapper.toDTO(user);
-    }
-
-    public UserDTO getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(()
-                -> new RuntimeException("User with ID " + id + " not found"));
-        return userMapper.toDTO(user);
-    }
-
-    public UserDTO createUser(User user) {
-        return userMapper.toDTO(userRepository.save(user));
-    }
 }

@@ -1,7 +1,6 @@
 package com.york.api.dto.responses;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import com.york.api.enums.PatientGender;
 
@@ -22,6 +21,5 @@ public class PatientDTO {
     private String phone;
     private String address;
     private LocalDate dob;
-    private List<AppointmentDTO> appointments;
 
 }

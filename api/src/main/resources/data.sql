@@ -231,3 +231,62 @@ VALUES
 (190, 'MEDIUM', 'AVAILABLE', '2024-12-16', '15:30', 12),
 (191, 'MEDIUM', 'AVAILABLE', '2024-12-16', '16:00', 12),
 (192, 'MEDIUM', 'AVAILABLE', '2024-12-16', '16:30', 12);
+
+--> slots with dates before 2024-12-09 to test past date filtering
+
+INSERT INTO slot (id, duration, status, date, time, doctor_id)
+VALUES
+(193, 'MEDIUM', 'AVAILABLE', '2024-12-08', '09:00', 1),
+(194, 'MEDIUM', 'AVAILABLE', '2024-12-08', '09:30', 1),
+(195, 'MEDIUM', 'AVAILABLE', '2024-12-08', '10:00', 1),
+(196, 'MEDIUM', 'AVAILABLE', '2024-12-08', '10:30', 1),
+(197, 'MEDIUM', 'AVAILABLE', '2024-12-09', '11:00', 1),
+(198, 'MEDIUM', 'AVAILABLE', '2024-12-09', '11:30', 1),
+(199, 'MEDIUM', 'AVAILABLE', '2024-12-08', '12:00', 1),
+(200, 'MEDIUM', 'AVAILABLE', '2024-12-08', '12:30', 1),
+(201, 'MEDIUM', 'AVAILABLE', '2024-12-08', '13:00', 1),
+(202, 'MEDIUM', 'AVAILABLE', '2024-12-09', '13:30', 1),
+(203, 'MEDIUM', 'AVAILABLE', '2024-12-08', '14:00', 1),
+(204, 'MEDIUM', 'AVAILABLE', '2024-12-08', '14:30', 1),
+(205, 'MEDIUM', 'AVAILABLE', '2024-12-09', '15:00', 1),
+(206, 'MEDIUM', 'AVAILABLE', '2024-12-09', '15:30', 1),
+(207, 'MEDIUM', 'AVAILABLE', '2024-12-08', '16:00', 1),
+(208, 'MEDIUM', 'AVAILABLE', '2024-12-09', '01:00', 1);
+
+--> Slots with status 'BOOKED' to test filtering
+INSERT INTO slot (id, duration, status, date, time, doctor_id)
+VALUES
+(209, 'MEDIUM', 'BOOKED', '2024-12-16', '09:00', 1),
+(210, 'MEDIUM', 'BOOKED', '2024-12-16', '09:30', 1),
+(211, 'MEDIUM', 'BOOKED', '2024-12-16', '10:00', 1),
+(212, 'MEDIUM', 'BOOKED', '2024-12-16', '10:30', 1),
+(213, 'MEDIUM', 'BOOKED', '2024-12-16', '11:00', 1),
+(214, 'MEDIUM', 'BOOKED', '2024-12-16', '11:30', 1),
+(215, 'MEDIUM', 'BOOKED', '2024-12-16', '12:00', 1),
+(216, 'MEDIUM', 'BOOKED', '2024-12-16', '12:30', 1),
+(217, 'MEDIUM', 'BOOKED', '2024-12-16', '13:00', 1),
+(218, 'MEDIUM', 'BOOKED', '2024-12-16', '13:30', 1),
+(219, 'MEDIUM', 'BOOKED', '2024-12-16', '14:00', 1),
+(220, 'MEDIUM', 'BOOKED', '2024-12-16', '14:30', 1),
+(221, 'MEDIUM', 'BOOKED', '2024-12-16', '15:00', 1),
+(222, 'MEDIUM', 'BOOKED', '2024-12-16', '15:30', 1),
+(223, 'MEDIUM', 'BOOKED', '2024-12-16', '16:00', 1),
+(224, 'MEDIUM', 'BOOKED', '2024-12-16', '16:30', 1);
+
+--> Test users
+-- INSERT INTO app_user (id, username, password, role)
+-- VALUES
+-- (1, 'admin', 'admin', 'ADMIN'),
+-- (2, 'patient', 'patient', 'PATIENT'),
+-- (3, 'testuser', 'password', 'PATIENT');
+
+--> Seed for Patient profile for app_user with id 2
+
+-- INSERT INTO patient (id, first_name, last_name, email, phone, address, gender, dob)
+-- VALUES
+-- (1, 'John', 'Doe', 'jon@doe.com', '555-1233', '123 Main', 1, '1990-01-01');
+
+-- --> set patient_id for app_user with id 2
+-- UPDATE app_user SET patient_profile_id = 1 WHERE id = 2;
+
+

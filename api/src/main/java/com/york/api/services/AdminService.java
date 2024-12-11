@@ -59,7 +59,6 @@ public class AdminService {
     }
 
     // Doctor operations
-    @Transactional
     public DoctorDTO createDoctor(DoctorRequest doctorRequest) {
         Doctor newDoctor = doctorMapper.toEntityFromRequest(doctorRequest);
         return doctorMapper.toDTO(doctorRepository.save(newDoctor));
@@ -96,10 +95,9 @@ public class AdminService {
     public List<SlotDTO> addDoctorSlots(Long doctorId, List<Slot> slots) {
         Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(()
                 -> new IllegalArgumentException("Doctor with id " + doctorId + " not found"));
-        slots.forEach(slot -> {
-            slot.setDoctor(doctor);
-            doctor.getSlots().add(slot);
-        });
+        doctor.getSlots().addAll(slots);
+        doctorRepository.save(doctor);
+
         return slotMapper.toDTOList(doctorRepository.save(doctor).getSlots());
     }
 

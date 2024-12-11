@@ -12,6 +12,7 @@ import com.york.api.models.Doctor;
 @Mapper(componentModel = "spring", uses = {SlotMapper.class, SpecializationMapper.class})
 public interface DoctorMapper {
 
+    @Mapping(target = "specializationId", source = "doctor.specialization.id")
     @Mapping(target = "specialization", source = "doctor.specialization.name")
     public abstract DoctorDTO toDTO(Doctor doctor);
 

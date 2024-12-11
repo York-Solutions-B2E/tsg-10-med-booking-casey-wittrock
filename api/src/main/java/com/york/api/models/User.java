@@ -60,4 +60,9 @@ public class User {
     public String getRoleString() {
         return role.toString();
     }
+
+    public User(String username, String oktaId) {
+        this.username = username;
+        this.oktaId = oktaId;
+    }
 }

@@ -39,6 +39,4 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Appointment> appointments;
-
-    // build a constructor with all fields except id
 }
