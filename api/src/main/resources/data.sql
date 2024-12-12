@@ -5,7 +5,8 @@ VALUES
     (2, 'Pediatrics'), 
     (3, 'Dermatology'), 
     (4, 'Orthopedics'), 
-    (5, 'Neurology');
+    (5, 'Neurology')
+ON CONFLICT (id) DO NOTHING;
 
 --> Doctor Seed
 
@@ -22,9 +23,10 @@ VALUES
 (9, 'Brian', 'Lobe', 'neuro.surge@healthcare.com', '555-0501', '357 Brain Blvd', 5),
 (10, 'Allan', 'Zheimer', 'axon.potential@healthcare.com', '555-0502', '468 Neuron Rd', 5),
 (11, 'Ben', 'Dover', 'patella.kneecap@healthcare.com', '555-0601', '159 Joint Ct', 4),
-(12, 'Scarlet', 'Fever', 'scarlet.fever@healthcare.com', '555-0602', '753 Epidermis Cir', 3);
+(12, 'Scarlet', 'Fever', 'scarlet.fever@healthcare.com', '555-0602', '753 Epidermis Cir', 3)
+ON CONFLICT (id) DO NOTHING;
 
---> Schedule Seed
+--> Schedule Seed. Add 3 days of slots for each doctor. Days can be any random day between 2024-12-13 and 2024-12-23, but not weekends
 INSERT INTO slot (id, duration, status, date, time, doctor_id)
 VALUES
 --Doctor 1 (Paul Patayshun)
@@ -44,6 +46,7 @@ VALUES
 (14, 'MEDIUM', 'AVAILABLE', '2024-12-16', '15:30', 1),
 (15, 'MEDIUM', 'AVAILABLE', '2024-12-16', '16:00', 1),
 (16, 'MEDIUM', 'AVAILABLE', '2024-12-16', '16:30', 1),
+
 --Doctor 2 (Angie O'Gram)
 (17, 'MEDIUM', 'AVAILABLE', '2024-12-16', '09:00', 2),
 (18, 'MEDIUM', 'AVAILABLE', '2024-12-16', '09:30', 2),
@@ -180,6 +183,7 @@ VALUES
 (142, 'MEDIUM', 'AVAILABLE', '2024-12-16', '15:30', 9),
 (143, 'MEDIUM', 'AVAILABLE', '2024-12-16', '16:00', 9),
 (144, 'MEDIUM', 'AVAILABLE', '2024-12-16', '16:30', 9),
+
 --Doctor 10 (Allan Zheimer)
 (145, 'MEDIUM', 'AVAILABLE', '2024-12-16', '09:00', 10),
 (146, 'MEDIUM', 'AVAILABLE', '2024-12-16', '09:30', 10),
@@ -230,7 +234,8 @@ VALUES
 (189, 'MEDIUM', 'AVAILABLE', '2024-12-16', '15:00', 12),
 (190, 'MEDIUM', 'AVAILABLE', '2024-12-16', '15:30', 12),
 (191, 'MEDIUM', 'AVAILABLE', '2024-12-16', '16:00', 12),
-(192, 'MEDIUM', 'AVAILABLE', '2024-12-16', '16:30', 12);
+(192, 'MEDIUM', 'AVAILABLE', '2024-12-16', '16:30', 12)
+ON CONFLICT (id) DO NOTHING;
 
 --> slots with dates before 2024-12-09 to test past date filtering
 
@@ -251,7 +256,8 @@ VALUES
 (205, 'MEDIUM', 'AVAILABLE', '2024-12-09', '15:00', 1),
 (206, 'MEDIUM', 'AVAILABLE', '2024-12-09', '15:30', 1),
 (207, 'MEDIUM', 'AVAILABLE', '2024-12-08', '16:00', 1),
-(208, 'MEDIUM', 'AVAILABLE', '2024-12-09', '01:00', 1);
+(208, 'MEDIUM', 'AVAILABLE', '2024-12-09', '01:00', 1)
+ON CONFLICT (id) DO NOTHING;
 
 --> Slots with status 'BOOKED' to test filtering
 INSERT INTO slot (id, duration, status, date, time, doctor_id)
@@ -271,7 +277,8 @@ VALUES
 (221, 'MEDIUM', 'BOOKED', '2024-12-16', '15:00', 1),
 (222, 'MEDIUM', 'BOOKED', '2024-12-16', '15:30', 1),
 (223, 'MEDIUM', 'BOOKED', '2024-12-16', '16:00', 1),
-(224, 'MEDIUM', 'BOOKED', '2024-12-16', '16:30', 1);
+(224, 'MEDIUM', 'BOOKED', '2024-12-16', '16:30', 1)
+ON CONFLICT (id) DO NOTHING;
 
 --> Test users
 -- INSERT INTO app_user (id, username, password, role)

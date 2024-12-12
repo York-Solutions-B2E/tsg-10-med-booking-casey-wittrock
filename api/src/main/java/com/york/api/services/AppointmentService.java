@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.york.api.dto.requests.ApptUpdateRequest;
 import com.york.api.dto.responses.AppointmentDTO;
 import com.york.api.enums.AppointmentStatus;
 import com.york.api.enums.SlotStatus;
@@ -49,8 +50,7 @@ public class AppointmentService {
         existingAppointment.setStatus(AppointmentStatus.CANCELED);
         Slot slot = existingAppointment.getApptInfo();
         slot.setStatus(SlotStatus.AVAILABLE);
-        slotRepository.save(slot);
-        existingAppointment.setApptInfo(null);
+        existingAppointment.setApptInfo(slotRepository.save(slot));
         return appointmentMapper.toDTO(appointmentRepository.save(existingAppointment));
     }
 
@@ -85,6 +85,14 @@ public class AppointmentService {
         appointment.setPatient(patientRepository.findById(patientId).orElseThrow(()
                 -> new IllegalArgumentException("Patient with id " + patientId + " not found")));
         return appointmentMapper.toDTO(appointmentRepository.save(appointment));
+    }
+
+    public AppointmentDTO updateAppointment(Long apptId, ApptUpdateRequest apptInfo) {
+        Appointment existingAppt = appointmentRepository.findById(apptId).orElseThrow(()
+                -> new IllegalArgumentException("Appointment with id " + apptId + " not found"));
+        existingAppt.setReason(apptInfo.getReason());
+        existingAppt.setType(apptInfo.getType());
+        return appointmentMapper.toDTO(appointmentRepository.save(existingAppt));
     }
 
 }

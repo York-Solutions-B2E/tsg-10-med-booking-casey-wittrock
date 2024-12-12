@@ -9,13 +9,9 @@ import AppointmentTable from "./AppointmentTable";
 const PatientHomePage = () => {
   const { appointments } = useAppContext();
   return (
-    <div>
+    <div className="container flex-col justify-items-center pt-[10rem]">
       <h2>Appointments</h2>
-      {appointments === 0 ? (
-        <div>No appointments</div>
-      ) : (
-        <AppointmentTable appointments={appointments} />
-      )}
+      <AppointmentTable appointments={appointments} />
     </div>
   );
 };

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.york.api.dto.responses.UserAndProfileDataDTO;
 import com.york.api.services.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
@@ -38,6 +39,14 @@ public class AuthenticationController {
     @GetMapping("/")
     public ResponseEntity<?> redirectToFrontend(HttpServletResponse response) {
         response.setHeader("Location", "http://localhost:3000/");
+        return ResponseEntity.status(HttpStatus.FOUND).build();
+    }
+
+    @PostMapping("api/auth/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response, HttpServletRequest request) {
+        response.setHeader("Location", registration.getProviderDetails().getConfigurationMetadata()
+                .get("end_session_endpoint").toString());
+        request.getSession().invalidate();
         return ResponseEntity.status(HttpStatus.FOUND).build();
     }
 }

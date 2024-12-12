@@ -15,10 +15,11 @@ import { calcDateDif } from "./helpers/calcDateDif";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AccordionActions } from "@mui/material";
 
 const App = () => {
   // Global state
-  const [alert, setAlert] = useState([]);
+  const [alert, setAlert] = useState(null);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [appointments, setAppointments] = useState([]);
@@ -27,19 +28,19 @@ const App = () => {
   const [userRole, setUserRole] = useState(null);
   const [cookies, setCookie, removeCookie] = useCookies(["XSRF-TOKEN"]);
 
+  // Navigation
   const nav = useNavigate();
 
   // Modal disclosures
   const submitApptModalDisc = useDisclosure();
   const registerModalDisc = useDisclosure();
 
-  // Authentication functions
+  // -----------------Authentication functions
 
   /**
    * Global Function to handle authentication. This function will call the authenticate() method from MedBookingApi
    * with the XSRF-TOKEN in the cookies and set the user, profile, and appointments state if authentication is successful.
    * This function should be called in the App component's useEffect.
-   * @returns {Promise<void>}
    */
   const handleAuth = async () => {
     setLoading(true);
@@ -74,6 +75,21 @@ const App = () => {
   };
 
   /**
+   * Global function to handle logout. This will clear the user, profile, and appointments state
+   * and remove the XSRF-TOKEN cookie.
+   * This function should be called in the Navbar component.
+   */
+  const handleLogout = async () => {
+    setUser(null);
+    setProfile(null);
+    setUserRole(null);
+    setAppointments([]);
+    const response = await MedBookingApi.logout();
+  };
+
+  // -----------------Patient Profile functions
+
+  /**
    * Global function to handle creating a patient profile.
    *
    * This function will call the createProfile() method from MedBookingApi
@@ -100,6 +116,17 @@ const App = () => {
     }
   };
 
+  // -----------------Appointment functions
+
+  /**
+   * Global function to handle submitting an appointment.
+   *
+   * This function will call the createAppointment() method from MedBookingApi
+   * and set the new appointment in the appointments state.
+   * @param {Number} slotId
+   * @param {{reason: String, type: String}} data {reason: String, type: String}
+   * @returns {Promise<void>}
+   */
   const handleSubmitAppointment = async (slotId, data) => {
     setLoading(true);
     try {
@@ -123,14 +150,84 @@ const App = () => {
     }
   };
 
-  const handleLogout = () => {
-    setUser(null);
-    setProfile(null);
-    setUserRole(null);
-    setAppointments([]);
-    removeCookie("XSRF-TOKEN");
+  /**
+   * Global function to handle updating an appointment.
+   *
+   * This function will call the updateAppointment() method from MedBookingApi
+   * and set the updated appointment in the appointments state.
+   * @param {Number} apptId
+   * @param {{reason: String, type: String}} apptInfo {reason: String, type: String}
+   */
+  const handleUpdateAppointment = async (apptId, apptInfo) => {
+    setLoading(true);
+    try {
+      const updatedAppt = await MedBookingApi.updateAppointment(
+        apptId,
+        apptInfo
+      );
+      const updatedAppts = appointments.map((appt) =>
+        appt.id === updatedAppt.id ? updatedAppt : appt
+      );
+      setAppointments(updatedAppts);
+      setAlert({
+        type: "success",
+        message: "Appointment updated successfully",
+        severity: "success",
+      });
+      nav(`/appointments/${apptId}`);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  /**
+   * Global function to handle cancelling or confirming an appointment.
+   *
+   * This function will call the updateAppointmentStatus() method from MedBookingApi
+   * and set the updated appointment in the appointments state.
+   * @param {Number} apptId
+   * @param {String} action
+   */
+  const handleCancelOrConfirmAppointment = async (apptId, status) => {
+    setLoading(true);
+    let updatedAppt;
+    try {
+      if (status === "CONFIRMED") {
+        updatedAppt = await MedBookingApi.confirmAppointment(apptId);
+      } else if (status === "CANCELED") {
+        updatedAppt = await MedBookingApi.cancelAppointment(apptId);
+      }
+      const updatedAppts = appointments.map((appt) =>
+        appt.id === updatedAppt.id ? updatedAppt : appt
+      );
+      setAppointments(updatedAppts);
+      setAlert({
+        type: "success",
+        message: `Appointment ${action.toLowerCase()}ed successfully`,
+        severity: "success",
+      });
+      nav(`/appointments/${apptId}`);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // -----------------Doctor and Specialization data functions
+  // These functions are used in the Appointment creation page and should work with that page's state.
+
+  /**
+   * Function to get the list of doctors and specializations.
+   *
+   * This function will call the getDoctors() and getSpecializations() methods from MedBookingApi
+   * and return the data.
+   *
+   * This function should be used in the Appointment creation page.
+   * @returns {Promise<{doctorsData: Array<DoctorObject>, specializationsData: Array<SpecializationObject>}>}
+   */
   const handleGetDoctorsAndSpecializations = async () => {
     setLoading(true);
     try {
@@ -155,7 +252,6 @@ const App = () => {
     console.log(profile);
     console.log(appointments);
     if (cookies["XSRF-TOKEN"] && user == null) {
-      // MedBookingApi.setToken(cookies["XSRF-TOKEN"]);
       handleAuth();
       MedBookingApi.setToken(cookies["XSRF-TOKEN"]);
     }
@@ -170,21 +266,24 @@ const App = () => {
         user,
         setAlert,
         handleLogin,
-        handleLogout,
         handleCreateProfile,
         handleGetDoctorsAndSpecializations,
         handleSubmitAppointment,
+        handleUpdateAppointment,
+        handleCancelOrConfirmAppointment,
         submitApptModalDisc,
-        registerModalDisc,
       }}
     >
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         {/* <Error message={error} /> */}
-        <Alerts alert={alert} dismiss={handleAlertRemoval} />
+        <Alerts alert={alert} dismiss={() => setAlert(null)} />
         <Navbar
           isLoggedIn={user != null}
           isAdmin={userRole === "ADMIN"}
           isRegistered={profile != null}
+          loading={loading}
+          login={handleLogin}
+          logout={handleLogout}
         />
         <div className="container m-auto">
           <Router

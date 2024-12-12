@@ -15,5 +15,7 @@ public class UserDTO {
     private String username;
     private String oktaId;
     private UserRole role;
+    private String firstName;
+    private String lastName;
 
 }

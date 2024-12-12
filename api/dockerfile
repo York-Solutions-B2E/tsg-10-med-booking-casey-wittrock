@@ -1,0 +1,21 @@
+# Use an official Java runtime as a parent image
+FROM eclipse-temurin:17-jdk
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the Maven build file and source code into the container
+COPY pom.xml mvnw ./
+COPY src ./src
+
+# Install Maven dependencies
+RUN ./mvnw dependency:go-offline -B
+
+# Build the application
+RUN ./mvnw package -DskipTests
+
+# Expose port 8080 for the backend
+EXPOSE 8080
+
+# Run the application
+CMD ["java", "-jar", "target/*.jar"]

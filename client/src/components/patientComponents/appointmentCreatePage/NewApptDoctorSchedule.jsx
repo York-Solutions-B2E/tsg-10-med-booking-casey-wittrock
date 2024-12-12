@@ -11,14 +11,16 @@ const NewApptDoctorSchedule = ({
   specializationOptions,
   doctorOptions,
   availableSlots,
+  apptCheck,
 }) => {
   const shouldDisableDate = (date) => {
     return !allowedDates.some((allowedDate) => allowedDate.isSame(date, "day"));
   };
 
   return (
-    <>
+    <div className="mt-5 justify-items-center">
       <Select
+        className="m-2"
         value={selectedSpecId}
         onChange={onSelectChange}
         name="specialization"
@@ -27,6 +29,7 @@ const NewApptDoctorSchedule = ({
         {specializationOptions}
       </Select>
       <Select
+        className="m-2"
         value={selectedDrId}
         disabled={selectedSpecId === 0}
         onChange={onSelectChange}
@@ -35,22 +38,24 @@ const NewApptDoctorSchedule = ({
       >
         {doctorOptions}
       </Select>
-      {selectedDrId === 0 ? (
-        <div>Please select a doctor</div>
-      ) : (
-        <DatePicker
-          value={date}
-          inputFormat="yyyy.MM.dd"
-          onChange={onChange}
-          views={["year", "month", "day"]}
-          name="date"
-          openTo="year"
-          disablePast
-          shouldDisableDate={shouldDisableDate}
-        />
+      {selectedDrId === 0 ? null : (
+        <div className="m-2 flex justify-items-center">
+          <DatePicker
+            value={date}
+            inputFormat="yyyy.MM.dd"
+            onChange={onChange}
+            views={["year", "month", "day"]}
+            name="date"
+            openTo="year"
+            disablePast
+            shouldDisableDate={shouldDisableDate}
+          />
+        </div>
       )}
-      {availableSlots.length != 0 && <div>{availableSlots}</div>}
-    </>
+      {availableSlots.length != 0 && (
+        <div className="w-[30rem]">{availableSlots}</div>
+      )}
+    </div>
   );
 };
 

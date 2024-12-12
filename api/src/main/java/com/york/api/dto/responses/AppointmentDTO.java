@@ -25,6 +25,7 @@ public class AppointmentDTO {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
     private String doctorName;
+    private Long doctorId;
     private String specialization;
     private AppointmentType type;
     private String duration;

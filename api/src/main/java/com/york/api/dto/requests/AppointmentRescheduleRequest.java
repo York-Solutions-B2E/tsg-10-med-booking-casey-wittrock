@@ -6,9 +6,13 @@ import java.time.LocalTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.york.api.enums.AppointmentStatus;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppointmentRescheduleRequest {
 
     @JsonFormat(pattern = "MM-dd-yyyy")

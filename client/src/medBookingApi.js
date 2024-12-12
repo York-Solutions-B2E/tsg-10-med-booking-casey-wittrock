@@ -96,6 +96,10 @@ class MedBookingApi {
     return await this.request(`/auth/login`, "post", data);
   }
 
+  static async logout() {
+    return await this.request(`/auth/logout`, "post");
+  }
+
   //Patient API
 
   /**
@@ -175,6 +179,22 @@ class MedBookingApi {
     return await this.request(
       `/appointment/create/${patientId}/${slotId}`,
       "post",
+      data
+    );
+  }
+
+  /**
+   * Update an appointment by appointmentId.
+   *
+   * Use async function and await this method to update the appointment
+   * @param {Number} appointmentId
+   * @param {{reason: String, type: String}} data {reason: String, type: String}
+   * @returns
+   */
+  static async updateAppointment(appointmentId, data) {
+    return await this.request(
+      `/appointment/${appointmentId}/update`,
+      "patch",
       data
     );
   }

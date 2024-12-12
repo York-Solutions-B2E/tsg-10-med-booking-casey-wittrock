@@ -29,7 +29,6 @@ client/.env.*
 # API (Java Spring Boot)
 api/target/
 api/.gradle/
-api/.mvn/
 api/logs/
 
 # Placeholder files for sensitive configurations

@@ -1,5 +1,17 @@
 import React from "react";
-import { Modal, Button, Box } from "@mui/material";
+import {
+  Modal,
+  Button,
+  Box,
+  Card,
+  CardHeader,
+  CardContent,
+  CardActionArea,
+  Typography,
+} from "@mui/material";
+
+import formatTimeString from "../../../helpers/formatTimeString";
+import formattedDateString from "../../../helpers/formattedDate";
 
 const SubmitAppointmentModal = ({
   apptInfo,
@@ -10,19 +22,38 @@ const SubmitAppointmentModal = ({
 }) => {
   return (
     <Modal open={disclosure.isOpen} onClose={disclosure.close}>
-      <Box className="w-[300px] m-auto bg-white rounded-lg p-10">
-        {doctor && slot && apptInfo && (
-          <div className="flex-col justify-items-center">
-            <h2>Appointment Summary</h2>
-            <p>{doctor.specialization}</p>
-            <p>Date: {slot.date}</p>
-            <p>Time: {slot.time}</p>
-            <p>Duration: {slot.duration}</p>
-            <p>Type: {apptInfo.type}</p>
-            <p>Doctor: {`Dr. ${doctor.firstName} ${doctor.lastName}`}</p>
-            <Button onClick={submit}>Submit</Button>
-            <Button onClick={disclosure.close}>Cancel</Button>
-          </div>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 400,
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          borderRadius: 2,
+          p: 1,
+        }}
+      >
+        {doctor && slot && apptInfo && disclosure && submit && (
+          <Card>
+            <CardHeader title="Confirm Appointment" />
+            <CardContent>
+              <Typography variant="h6">
+                Dr. {doctor.firstName} {doctor.lastName}
+              </Typography>
+              <Typography variant="body1">
+                {formattedDateString(slot.date)} at{" "}
+                {formatTimeString(slot.time)}.
+              </Typography>
+              <Typography variant="body2">{doctor.specialization}</Typography>
+              <Typography variant="body2">Reason: {apptInfo.reason}</Typography>
+            </CardContent>
+            <CardActionArea>
+              <Button onClick={submit}>Confirm</Button>
+              <Button onClick={disclosure.close}>Cancel</Button>
+            </CardActionArea>
+          </Card>
         )}
       </Box>
     </Modal>

@@ -2,6 +2,7 @@ package com.york.api.models;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
 
@@ -15,7 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -48,9 +49,9 @@ public class Slot {
     @ManyToOne
     private Doctor doctor;
 
-    @OneToOne(mappedBy = "apptInfo", orphanRemoval = false)
+    @OneToMany(mappedBy = "apptInfo", orphanRemoval = false)
     @ColumnDefault("null")
-    private Appointment appointment;
+    private List<Appointment> appointments;
 
     public String getStatusString() {
         return status.toString();

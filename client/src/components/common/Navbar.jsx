@@ -3,31 +3,35 @@ import { useNavigate } from "react-router-dom";
 import { AppBar, Box, Toolbar, Button, Link, Container } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { LocalHospitalRounded } from "@mui/icons-material";
-import useAppContext from "../../hooks/useAppContext";
 
-const Navbar = ({ isLoggedIn }) => {
-  const { loading, handleLogin, handleLogout } = useAppContext();
+const Navbar = ({ isLoggedIn, loading, login, logout, isRegistered }) => {
   const navigate = useNavigate();
   return (
     <>
       <AppBar component="nav" position="static">
         <Box sx={{ flexGrow: 1 }}>
           <Toolbar variant="dense">
-            <h1>Navbar</h1>
+            <Button onClick={() => navigate("/")} color="inherit">
+              {isLoggedIn ? "Patient Home" : "Welcome"}
+            </Button>
             {isLoggedIn ? (
               <>
-                <Button
-                  variant="contained"
-                  size="large"
-                  className="rounded-lg"
-                  startIcon={<LocalHospitalRounded />}
-                  onClick={() => {
-                    navigate("/appointments/create");
-                  }}
-                >
-                  Make an Appointment
-                </Button>
-                <Button variant="contained" onClick={handleLogout}>
+                {isRegistered && (
+                  <>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      className="rounded-lg"
+                      startIcon={<LocalHospitalRounded />}
+                      onClick={() => {
+                        navigate("/appointments/create");
+                      }}
+                    >
+                      Make an Appointment
+                    </Button>
+                  </>
+                )}
+                <Button variant="contained" onClick={logout}>
                   Logout
                 </Button>
               </>
@@ -36,7 +40,7 @@ const Navbar = ({ isLoggedIn }) => {
                 <LoadingButton
                   loading={loading}
                   variant="contained"
-                  onClick={handleLogin}
+                  onClick={login}
                 >
                   Login
                 </LoadingButton>

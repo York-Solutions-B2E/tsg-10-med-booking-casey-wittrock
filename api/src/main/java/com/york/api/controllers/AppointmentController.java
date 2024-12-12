@@ -1,6 +1,7 @@
 package com.york.api.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.york.api.dto.requests.ApptUpdateRequest;
 import com.york.api.dto.responses.AppointmentDTO;
 import com.york.api.models.Appointment;
 import com.york.api.services.AppointmentService;
@@ -41,6 +43,11 @@ public class AppointmentController {
     @PatchMapping("/{appointmentId}/confirm")
     public AppointmentDTO confirmAppointment(@PathVariable Long appointmentId) {
         return appointmentService.confirmAppointment(appointmentId);
+    }
+
+    @PatchMapping("/{apptId}/update")
+    public ResponseEntity<AppointmentDTO> updateAppointment(@PathVariable Long apptId, @RequestBody ApptUpdateRequest apptInfo) {
+        return ResponseEntity.ok(appointmentService.updateAppointment(apptId, apptInfo));
     }
 
 }

@@ -5,6 +5,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.york.api.dto.responses.UserAndProfileDataDTO;
+import com.york.api.dto.responses.UserDTO;
 import com.york.api.enums.UserRole;
 import com.york.api.mappers.AppointmentMapper;
 import com.york.api.mappers.PatientMapper;
@@ -31,10 +32,14 @@ public class UserService {
 
     public UserAndProfileDataDTO getOrCreateUser(OAuth2User user) {
         String oktaId = user.getAttribute("sub");
+        System.out.println(user.getAttributes());
         User existingUser = userRepository.findByOktaId(oktaId).orElseGet(()
                 -> userRepository.save(new User(user.getAttribute("preferred_username"), user.getAttribute("sub"))));
         UserAndProfileDataDTO data = new UserAndProfileDataDTO();
-        data.setUser(userMapper.toDTO(existingUser));
+        UserDTO userData = userMapper.toDTO(existingUser);
+        userData.setFirstName(user.getAttribute("given_name"));
+        userData.setLastName(user.getAttribute("family_name"));
+        data.setUser(userData);
         if (existingUser.getRole().equals(UserRole.PATIENT)) {
             if (existingUser.getPatientProfile() != null) {
                 data.setProfile(patientMapper.toDTO(existingUser.getPatientProfile()));

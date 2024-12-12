@@ -5,7 +5,10 @@
  * @returns {String} formatted date string
  */
 const formattedDateString = (date) => {
-  const dateObj = new Date(date);
+  // Split the input string into year, month, and day
+  const [year, month, day] = date.split("-").map(Number);
+  // Create a date object using the local time
+  const dateObj = new Date(year, month - 1, day); // Month is 0-indexed
   const options = { year: "numeric", month: "long", day: "numeric" };
   return dateObj.toLocaleDateString(undefined, options);
 };

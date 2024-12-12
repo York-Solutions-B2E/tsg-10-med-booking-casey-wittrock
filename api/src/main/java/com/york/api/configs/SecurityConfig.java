@@ -18,7 +18,8 @@ public class SecurityConfig {
                 .requestMatchers("/", "/index.html", "/static/**",
                         "/*.ico", "/*.json", "/*.png", "/api/user",
                         "/login/oauth2/code/okta", "/api/logout")
-                .permitAll().anyRequest().authenticated());
+                .permitAll()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN").anyRequest().authenticated());
         http.csrf(csrf -> csrf
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()));
