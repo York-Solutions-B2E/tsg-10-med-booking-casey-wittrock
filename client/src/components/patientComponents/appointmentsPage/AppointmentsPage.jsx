@@ -25,6 +25,7 @@ import formatTimeString from "../../../helpers/formatTimeString";
 import formatTypeString from "../../../helpers/formatTypeString";
 
 import useDisclosure from "../../../hooks/useDisclosure";
+import RescheduleCalendar from "./RescheduleCalendar";
 
 const TYPE_OPTIONS = ["IN_PERSON", "VIRTUAL"];
 
@@ -98,7 +99,7 @@ const AppointmentsPage = () => {
   return (
     <>
       {appt && (
-        <Card>
+        <Card className="mt-10 bg-slate-50">
           <CardHeader title="Appointment Information" />
           <CardContent>
             <ThemeProvider theme={theme}>
@@ -258,12 +259,13 @@ const AppointmentsPage = () => {
           </CardActionArea>
           <CardContent>
             {rescheduling && (
-              <TextField
-                label="New Date"
-                variant="standard"
-                type="date"
-                InputLabelProps={{ shrink: true }}
-              />
+              <>
+                <RescheduleCalendar
+                  setAppt={setAppt}
+                  isOpen={setRescheduling}
+                  appt={appt}
+                />
+              </>
             )}
           </CardContent>
         </Card>

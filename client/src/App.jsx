@@ -3,7 +3,7 @@ import useDisclosure from "./hooks/useDisclosure";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import AppContext from "./context/Appcontext";
-import MedBookingApi from "./MedBookingApi";
+import MedBookingApi from "./medBookingApi";
 
 import Router from "./router/Router";
 import Navbar from "./components/common/Navbar";
@@ -216,6 +216,30 @@ const App = () => {
     }
   };
 
+  const handleRescheduleAppointment = async (apptId, slotId) => {
+    setLoading(true);
+    try {
+      const updatedAppt = await MedBookingApi.rescheduleAppointment(
+        apptId,
+        slotId
+      );
+      const updatedAppts = appointments.map((appt) =>
+        appt.id === updatedAppt.id ? updatedAppt : appt
+      );
+      setAppointments(updatedAppts);
+      setAlert({
+        type: "success",
+        message: "Appointment rescheduled successfully",
+        severity: "success",
+      });
+      return updatedAppt;
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // -----------------Doctor and Specialization data functions
   // These functions are used in the Appointment creation page and should work with that page's state.
 
@@ -241,8 +265,22 @@ const App = () => {
     }
   };
 
-  const handleAlertRemoval = () => {
-    setAlert(null);
+  /**
+   * Function to get a doctor by doctorId.
+   * This function will call the getDoctor() method from MedBookingApi
+   * and return the doctor data.
+   * @param {Number} doctorId
+   * @returns {Promise<DoctorObject>} {DoctorObject}
+   */
+  const handleGetDoctor = async (doctorId) => {
+    setLoading(true);
+    try {
+      return await MedBookingApi.getDoctor(doctorId);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -261,6 +299,7 @@ const App = () => {
     <AppContext.Provider
       value={{
         loading,
+        setLoading,
         appointments,
         profile,
         user,
@@ -268,8 +307,10 @@ const App = () => {
         handleLogin,
         handleCreateProfile,
         handleGetDoctorsAndSpecializations,
+        handleGetDoctor,
         handleSubmitAppointment,
         handleUpdateAppointment,
+        handleRescheduleAppointment,
         handleCancelOrConfirmAppointment,
         submitApptModalDisc,
       }}

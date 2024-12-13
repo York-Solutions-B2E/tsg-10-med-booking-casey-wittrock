@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import HomePage from "../../components/HomePage/HomePage";
+import HomePage from "../../components/homePage/HomePage";
 import NotFound from "../../components/common/NotFound";
 
 const PublicRoutes = () => {

@@ -12,6 +12,7 @@ import {
 
 import formatTimeString from "../../../helpers/formatTimeString";
 import formattedDateString from "../../../helpers/formattedDate";
+import formatTypeString from "../../../helpers/formatTypeString";
 
 const SubmitAppointmentModal = ({
   apptInfo,
@@ -46,6 +47,15 @@ const SubmitAppointmentModal = ({
                 {formattedDateString(slot.date)} at{" "}
                 {formatTimeString(slot.time)}.
               </Typography>
+              <Typography>
+                Visit type: {formatTypeString(apptInfo.type)}
+              </Typography>
+              {apptInfo.type == "IN_PERSON" && (
+                <Typography className="text-sm text-red-500">
+                  Note: You must arrive 15 minutes earlier than the scheduled
+                  time for check-in.
+                </Typography>
+              )}
               <Typography variant="body2">{doctor.specialization}</Typography>
               <Typography variant="body2">Reason: {apptInfo.reason}</Typography>
             </CardContent>

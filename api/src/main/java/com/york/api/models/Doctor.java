@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class Doctor {
 
     @Id
-    @SequenceGenerator(name = "doctor_sequence", sequenceName = "doctor_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "doctor_sequence", sequenceName = "doctor_sequence", initialValue = 1000, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "doctor_sequence")
     private Long id;
     private String firstName;

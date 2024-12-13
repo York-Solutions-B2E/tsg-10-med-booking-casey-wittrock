@@ -59,8 +59,17 @@ public class AdminService {
     }
 
     // Doctor operations
+    @Transactional
     public DoctorDTO createDoctor(DoctorRequest doctorRequest) {
-        Doctor newDoctor = doctorMapper.toEntityFromRequest(doctorRequest);
+        Doctor newDoctor = new Doctor();
+        Specialization specialization = specializationRepository.findById(doctorRequest.getSpecializationId()).orElseThrow(()
+                -> new IllegalArgumentException("Specialization with id " + doctorRequest.getSpecializationId() + " not found"));
+        newDoctor.setAddress(doctorRequest.getAddress());
+        newDoctor.setEmail(doctorRequest.getEmail());
+        newDoctor.setFirstName(doctorRequest.getFirstName());
+        newDoctor.setLastName(doctorRequest.getLastName());
+        newDoctor.setPhone(doctorRequest.getPhone());
+        newDoctor.setSpecialization(specialization);
         return doctorMapper.toDTO(doctorRepository.save(newDoctor));
     }
 

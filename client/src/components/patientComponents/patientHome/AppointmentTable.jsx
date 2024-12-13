@@ -25,11 +25,12 @@ const AppointmentTable = ({ appointments }) => {
   const navigate = useNavigate();
 
   const columns = [
+    { field: "id", headerName: "Appt Id", width: 90, editable: false },
     { field: "date", headerName: "Date", width: 150, editable: false },
     { field: "time", headerName: "Time", width: 100, editable: false },
     { field: "doctor", headerName: "Doctor", width: 150, editable: false },
     { field: "type", headerName: "Type", width: 110, editable: false },
-    { field: "status", headerName: "Status", width: 150, editable: false },
+    { field: "status", headerName: "Status", width: 100, editable: false },
     {
       field: "action",
       headerName: "",

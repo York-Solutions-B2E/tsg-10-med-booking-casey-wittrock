@@ -1,6 +1,7 @@
 package com.york.api.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,13 +29,13 @@ public class PatientController {
     //     return patientService.getPatientProfileById(id);
     // }
     @PostMapping("/create/{userId}")
-    public PatientDTO createPatientProfile(@PathVariable Long userId, @RequestBody Patient patient) {
-        return patientService.createPatientProfile(patient, userId);
+    public ResponseEntity<PatientDTO> createPatientProfile(@PathVariable Long userId, @RequestBody Patient patient) {
+        return ResponseEntity.ok(patientService.createPatientProfile(patient, userId));
     }
 
     @PutMapping("/update/{patientId}")
-    public PatientDTO updatePatientProfile(@PathVariable Long patientId, @RequestBody Patient patient) {
-        return patientService.updatePatientProfile(patientId, patient);
+    public ResponseEntity<PatientDTO> updatePatientProfile(@PathVariable Long patientId, @RequestBody Patient patient) {
+        return ResponseEntity.ok(patientService.updatePatientProfile(patientId, patient));
     }
 
     // @GetMapping("/{patientId}/appointments")

@@ -6,25 +6,11 @@ const BASE_URL = "/api";
  * API Class to make calls to the backend API.
  *
  * Use async functions and await the methods of this class to get the response data.
- * @method login(data) - Login a user and returns the user data, profile, and appointments if user is a patient.
- * @method registerPatient(data) - Create a new patient user and returns the new user instance.
- * @method createProfile(userId, data) - Create a patient profile and returns the new profile instance.
- * @method updatedPatientProfile(patientId, data) - Update a patient profile and returns the updated profile instance.
- * @method getPatientAppointments(patientId) - Get all appointments for a patient.
- * @method cancelAppointment(appointmentId) - Cancel an appointment.
- * @method getAppointment(appointmentId) - Get an appointment.
- * @method createAppointment(patientId, slotId, data) - Create an appointment.
- * @method confirmAppointment(appointmentId) - Confirm an appointment.
- * @method markAppointmentAsCompleted(appointmentId) - Mark an appointment as completed.
- * @method markAsNoShow(appointmentId) - Mark an appointment as no show.
  *
  */
-
 class MedBookingApi {
   static token;
-  /**
-   * @typedef {id: number} UserObject
-   */
+
   /**
    * Request method to make a call to the backend API.
    *
@@ -259,6 +245,17 @@ class MedBookingApi {
     return this.request(`/doctor/all`);
   }
 
+  /**
+   * Get a doctor by doctorId.
+   *
+   * Use async function and await this method to get the doctor instance.
+   * @param {Number} doctorId
+   * @returns {Promise<DoctorObject>} {DoctorObject}
+   */
+  static getDoctor(doctorId) {
+    return this.request(`/doctor/${doctorId}`);
+  }
+
   // Specializations API
 
   /**
@@ -269,31 +266,6 @@ class MedBookingApi {
    */
   static getSpecializations() {
     return this.request(`/specialization/all`);
-  }
-
-  // Admin API
-
-  static createDoctor(data) {
-    return this.request(`/admin/doctor/create`, "post", data);
-  }
-
-  static updateDoctor(doctorId, data) {
-    return this.request(`/admin/doctor/update/${doctorId}`, "put", data);
-  }
-
-  static updateDoctorSchedule(doctorId, data) {
-    return this.request(`/admin/doctor/${doctorId}/schedule`, "patch", data);
-  }
-
-  static async markAsNoShow(appointmentId) {
-    return await this.request(`/appointment/${appointmentId}/no-show`, "patch");
-  }
-
-  static async markAppointmentAsCompleted(appointmentId) {
-    return await this.request(
-      `/appointment/${appointmentId}/completed`,
-      "patch"
-    );
   }
 }
 

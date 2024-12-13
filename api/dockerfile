@@ -1,21 +1,13 @@
-# Use an official Java runtime as a parent image
-FROM eclipse-temurin:17-jdk
-
-# Set the working directory in the container
+# Dockerfile for Backend
+FROM eclipse-temurin:17-jdk-alpine as build
 WORKDIR /app
-
-# Copy the Maven build file and source code into the container
-COPY pom.xml mvnw ./
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
 COPY src ./src
+RUN ./mvnw clean install -DskipTests
 
-# Install Maven dependencies
-RUN ./mvnw dependency:go-offline -B
-
-# Build the application
-RUN ./mvnw package -DskipTests
-
-# Expose port 8080 for the backend
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
-# Run the application
-CMD ["java", "-jar", "target/*.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

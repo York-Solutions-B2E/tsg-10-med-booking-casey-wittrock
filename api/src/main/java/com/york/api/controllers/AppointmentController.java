@@ -26,23 +26,23 @@ public class AppointmentController {
     }
 
     @PostMapping("/create/{patientId}/{slotId}")
-    public AppointmentDTO createAppointment(@PathVariable Long patientId, @PathVariable Long slotId, @RequestBody Appointment appt) {
-        return appointmentService.createAndSetAppointment(patientId, slotId, appt);
+    public ResponseEntity<AppointmentDTO> createAppointment(@PathVariable Long patientId, @PathVariable Long slotId, @RequestBody Appointment appt) {
+        return ResponseEntity.ok(appointmentService.createAndSetAppointment(patientId, slotId, appt));
     }
 
     @PatchMapping("/{appointmentId}/cancel")
-    public AppointmentDTO cancelAppointment(@PathVariable Long appointmentId) {
-        return appointmentService.cancelAppointment(appointmentId);
+    public ResponseEntity<AppointmentDTO> cancelAppointment(@PathVariable Long appointmentId) {
+        return ResponseEntity.ok(appointmentService.cancelAppointment(appointmentId));
     }
 
     @PatchMapping("/{appointmentId}/reschedule/{slotId}")
-    public AppointmentDTO rescheduleAppointment(@PathVariable Long appointmentId, @PathVariable Long slotId) {
-        return appointmentService.rescheduleAppointment(appointmentId, slotId);
+    public ResponseEntity<AppointmentDTO> rescheduleAppointment(@PathVariable Long appointmentId, @PathVariable Long slotId) {
+        return ResponseEntity.ok(appointmentService.rescheduleAppointment(appointmentId, slotId));
     }
 
     @PatchMapping("/{appointmentId}/confirm")
-    public AppointmentDTO confirmAppointment(@PathVariable Long appointmentId) {
-        return appointmentService.confirmAppointment(appointmentId);
+    public ResponseEntity<AppointmentDTO> confirmAppointment(@PathVariable Long appointmentId) {
+        return ResponseEntity.ok(appointmentService.confirmAppointment(appointmentId));
     }
 
     @PatchMapping("/{apptId}/update")

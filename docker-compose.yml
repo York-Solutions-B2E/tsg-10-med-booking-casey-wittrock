@@ -1,35 +1,41 @@
-version: "3.8"
+version: '3.8'
 services:
-  backend:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-    depends_on:
-      - db
-
   frontend:
     build:
       context: ./client
       dockerfile: Dockerfile
+    environment:
+      NODE_ENV: docker
+    container_name: frontend
     ports:
       - "3000:80"
     depends_on:
       - backend
 
-  db:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: medical_scheduling
+  backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: backend
     ports:
-      - "5432:5432"
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/med_booking
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    container_name: db
+    environment:
+      POSTGRES_USER: youruser
+      POSTGRES_PASSWORD: yourpassword
+      POSTGRES_DB: med_booking
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+  pgdata:

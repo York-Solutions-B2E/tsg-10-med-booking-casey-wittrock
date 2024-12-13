@@ -203,7 +203,7 @@ const ApptCreatePage = () => {
         <Button
           disabled={
             (selectedSlotId === 0 && menuIdx === 1) ||
-            ((newApptInfo.type === "" || newApptInfo.reason === "") &&
+            ((newApptInfo.type === 0 || newApptInfo.reason === "") &&
               menuIdx === 0)
           }
           onClick={() => {

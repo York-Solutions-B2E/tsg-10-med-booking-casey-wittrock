@@ -12,6 +12,7 @@ import com.york.api.dto.responses.DoctorDTO;
 import com.york.api.enums.SlotStatus;
 import com.york.api.mappers.DoctorMapper;
 import com.york.api.mappers.SlotMapper;
+import com.york.api.models.Doctor;
 import com.york.api.repositories.DoctorRepository;
 import com.york.api.repositories.SpecializationRepository;
 
@@ -32,10 +33,12 @@ public class DoctorService {
         this.slotMapper = slotMapper;
     }
 
-    // public DoctorDTO getDoctorById(Long id) {
-    //     Doctor doctor = doctorRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Doctor with id " + id + " not found"));
-    //     return doctorMapper.toDTO(doctor);
-    // }
+    public DoctorDTO getDoctorById(Long id) {
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(()
+                -> new IllegalArgumentException("Doctor with id " + id + " not found"));
+        return doctorMapper.toDTO(doctor);
+    }
+
     @Transactional
     public List<DoctorDTO> getAllDoctors() {
         LocalDate currentDate = LocalDate.now();

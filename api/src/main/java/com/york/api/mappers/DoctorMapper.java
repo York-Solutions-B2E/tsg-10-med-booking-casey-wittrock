@@ -20,7 +20,8 @@ public interface DoctorMapper {
 
     @Mapping(target = "specialization", ignore = true)
     @Mapping(target = "slots", ignore = true)
-    @Mapping(target = "id", ignore = true)
+    public abstract Doctor toEntity(DoctorDTO dto);
+
     public abstract Doctor toEntityFromRequest(DoctorRequest request);
 
 }
