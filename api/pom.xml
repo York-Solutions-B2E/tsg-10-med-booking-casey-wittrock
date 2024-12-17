@@ -110,9 +110,9 @@
             	<version>3.8.1</version>
             	<configuration>
 					<archive>
-						<manifest>
+						<!-- <manifest>
 							<mainClass>com.york.api.ApiApplication</mainClass>
-						</manifest>
+						</manifest> -->
 					</archive>
                 	<source>1.8</source> <!-- depending on your project -->
                 	<target>1.8</target> <!-- depending on your project -->
